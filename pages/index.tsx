@@ -30,7 +30,8 @@ export default function Home({
         const { message } = await response.json();
         throw new Error(message);
       }
-      router.replace("/");
+      toast.success("Successfully logged you out.");
+      router.push("/");
     } catch (error: any) {
       console.error(error.message);
       toast.error(error.message);

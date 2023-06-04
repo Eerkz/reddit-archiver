@@ -152,6 +152,7 @@ export async function getServerSideProps({
       secure: true,
       sameSite: "none",
       httpOnly: true,
+      path: "/",
     });
     const user = await getUser(access_token);
     return {

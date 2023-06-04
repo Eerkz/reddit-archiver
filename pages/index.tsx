@@ -6,19 +6,20 @@ import SavedPosts from "../components/landing/SavedPosts";
 import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
+import { useState } from "react";
 
 export default function Home({
-  authenticated,
   user,
   access_token,
   error,
 }: {
-  authenticated: boolean;
   access_token?: string;
   user: RedditIdentity;
   error?: string;
 }) {
-  const showSignin = !authenticated || !user || !access_token;
+  const [isAuthenticated, setIsAuthenticated] = useState(() =>
+    user && access_token ? true : false
+  );
   return (
     <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">
       <div className="flex flex-col justify-center items-center h-full ">
@@ -26,10 +27,10 @@ export default function Home({
         <h1 className="text-primary-red font-extrabold text-[48px] mb-[14px]">
           reddit-archiver
         </h1>
-        {showSignin ? (
+        {!isAuthenticated ? (
           <Signin />
         ) : (
-          <SavedPosts token={access_token} username={user.name} />
+          <SavedPosts token={access_token!} username={user.name} />
         )}
       </div>
       <div className="flex flex-grow w-full"></div>
@@ -74,7 +75,6 @@ export async function getServerSideProps({
         props: {
           user,
           access_token: storedToken,
-          authenticated: true,
         },
       };
     }
@@ -85,9 +85,7 @@ export async function getServerSideProps({
     });
     if (!response) {
       return {
-        props: {
-          authenticated: false,
-        },
+        props: {},
       };
     }
 
@@ -102,7 +100,6 @@ export async function getServerSideProps({
     return {
       props: {
         user,
-        authenticated: true,
         access_token,
       },
     };
@@ -110,7 +107,6 @@ export async function getServerSideProps({
     console.error(error.message);
     return {
       props: {
-        authenticated: false,
         error: error.message,
       },
     };

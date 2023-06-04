@@ -7,7 +7,7 @@ import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppToast } from "../components/utilities/ToastContainer";
 
 export default function Home({
@@ -19,9 +19,11 @@ export default function Home({
   user: RedditIdentity;
   error?: string;
 }) {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
+    user && access_token ? true : false
+  );
   const toast = useAppToast();
   const router = useRouter();
-  const isAuthenticated = user && access_token ? true : false;
 
   const logout = async () => {
     try {
@@ -30,6 +32,7 @@ export default function Home({
         const { message } = await response.json();
         throw new Error(message);
       }
+      setIsAuthenticated(false);
       toast.success("Successfully logged you out.");
       router.push("/");
     } catch (error: any) {

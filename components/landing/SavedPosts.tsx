@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getSavedPosts } from "../../utils/getUser";
 import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
 import { useAppToast } from "../utilities/ToastContainer";
 
-export default function SavedPosts({
-  token,
-  username,
-}: {
-  token: string;
-  username: string;
-}) {
+export default function SavedPosts({ username }: { username: string }) {
   const toast = useAppToast();
   const [isLoading, setIsLoading] = useState(true);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
@@ -37,7 +30,7 @@ export default function SavedPosts({
         setIsLoading(false);
       }
     })();
-  }, [token, username, toast]);
+  }, [username, toast]);
 
   const handleJSONdowload = async () => {
     try {

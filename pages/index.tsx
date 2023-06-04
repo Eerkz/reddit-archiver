@@ -100,11 +100,6 @@ export async function getServerSideProps({
   query,
 }: GetServerSidePropsContext) {
   const { code } = query;
-  if (!code) {
-    return {
-      props: {},
-    };
-  }
 
   try {
     const storedToken = getCookie("rr_user_access_token", { req, res });
@@ -116,6 +111,12 @@ export async function getServerSideProps({
           user,
           access_token: storedToken,
         },
+      };
+    }
+
+    if (!code) {
+      return {
+        props: {},
       };
     }
 
@@ -137,6 +138,7 @@ export async function getServerSideProps({
       res,
       maxAge: expires_in,
       secure: true,
+      sameSite: "none",
     });
     const user = await getUser(access_token);
     return {

@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { deleteCookie, getCookie } from "cookies-next";
+import { getCookie, deleteCookie } from "cookies-next";
 import { authHeader } from "../../utils/getToken";
 
 export default async function handler(
@@ -28,9 +28,7 @@ export default async function handler(
       const { message } = await response.json();
       throw new Error(message);
     }
-    res.setHeader("Set-Cookie", [
-      `rr_user_access_token=deleted; Max-Age=0; path=/`,
-    ]);
+    deleteCookie("rr_user_access_token", { req, res });
     return res.status(200).json({ message: "User successfully logged out." });
   } catch (error: any) {
     return res

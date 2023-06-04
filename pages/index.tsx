@@ -1,5 +1,5 @@
 import { GetServerSidePropsContext } from "next";
-import { getCookie, setCookie } from "cookies-next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import Signin from "../components/landing/Signin";
 import { getToken } from "../utils/getToken";
 import SavedPosts from "../components/landing/SavedPosts";
@@ -160,11 +160,7 @@ export async function getServerSideProps({
       },
     };
   } catch (error: any) {
-    if (storedToken) {
-      res.setHeader("Set-Cookie", [
-        `rr_user_access_token=deleted; Max-Age=0; path=/`,
-      ]);
-    }
+    deleteCookie("rr_user_access_token", { req, res });
     return {
       props: {
         error: error.message,

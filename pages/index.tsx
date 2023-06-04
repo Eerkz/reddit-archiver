@@ -151,6 +151,7 @@ export async function getServerSideProps({
       maxAge: expires_in,
       secure: true,
       sameSite: "none",
+      httpOnly: true,
     });
     const user = await getUser(access_token);
     return {

@@ -7,7 +7,8 @@ import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import HeadLayout from "../components/layouts/Head";
+import { useEffect } from "react";
+import { useAppToast } from "../components/utilities/ToastContainer";
 
 export default function Home({
   user,
@@ -18,6 +19,7 @@ export default function Home({
   user: RedditIdentity;
   error?: string;
 }) {
+  const toast = useAppToast();
   const router = useRouter();
   const isAuthenticated = user && access_token ? true : false;
 
@@ -31,8 +33,15 @@ export default function Home({
       router.replace("/");
     } catch (error: any) {
       console.error(error.message);
+      toast.error(error.message);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+    }
+  }, [error, toast]);
 
   return (
     <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">

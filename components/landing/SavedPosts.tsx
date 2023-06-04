@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getSavedPosts } from "../../utils/getUser";
 import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
+import { useAppToast } from "../utilities/ToastContainer";
 
 export default function SavedPosts({
   token,
@@ -10,6 +11,7 @@ export default function SavedPosts({
   token: string;
   username: string;
 }) {
+  const toast = useAppToast();
   const [isLoading, setIsLoading] = useState(true);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
 
@@ -23,26 +25,31 @@ export default function SavedPosts({
         }
       } catch (error: any) {
         console.error(error.message);
+        toast.error(error.message);
       } finally {
         setIsLoading(false);
       }
     })();
-  }, [token, username]);
+  }, [token, username, toast]);
 
   const handleJSONdowload = async () => {
-    const filename = (
-      username +
-      "_saved_items" +
-      Math.floor(Date.now() / 1000).toString()
-    ).toLowerCase();
-    const data = JSON.stringify(savedItems);
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(url);
+    try {
+      const filename = (
+        username +
+        "_saved_items" +
+        Math.floor(Date.now() / 1000).toString()
+      ).toLowerCase();
+      const data = JSON.stringify(savedItems);
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   if (isLoading) {

@@ -19,9 +19,16 @@ export default function SavedPosts({
     (async function fetchSavedItems() {
       try {
         setIsLoading(true);
-        const data = await getSavedPosts(token, username);
-        if (data?.children) {
-          setSavedItems(data.children);
+        const response = await fetch(
+          `/api/saved-items?user=${encodeURIComponent(username)}`
+        );
+        if (!response.ok) {
+          const { message } = await response.json();
+          throw new Error(message);
+        }
+        const { data } = await response.json();
+        if (data?.saved?.children) {
+          setSavedItems(data.saved.children);
         }
       } catch (error: any) {
         console.error(error.message);

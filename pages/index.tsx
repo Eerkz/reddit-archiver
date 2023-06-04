@@ -7,6 +7,7 @@ import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Home({
   user,
@@ -17,11 +18,45 @@ export default function Home({
   user: RedditIdentity;
   error?: string;
 }) {
+  const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(() =>
     user && access_token ? true : false
   );
+  const logout = async () => {
+    try {
+      const response = await fetch("/api/logout");
+      if (!response.ok) {
+        const { message } = await response.json();
+        throw new Error(message);
+      }
+      setIsAuthenticated(false);
+      router.replace("/");
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  };
+
   return (
     <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">
+      {isAuthenticated ? (
+        <div className="flex w-full justify-end px-[20px]">
+          <button
+            className="flex justify-center items-center gap-x-2"
+            onClick={logout}
+          >
+            <Image
+              src={"/logout.svg"}
+              alt={"logout"}
+              width={23}
+              height={20}
+              style={{ width: "23px", height: "20px" }}
+            />
+            <p className="text-primary-red font-bold text-lg">Logout</p>
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="flex flex-col justify-center items-center h-full ">
         <Image src={"/logo.svg"} alt="archiver-logo" width={58} height={78} />
         <h1 className="text-primary-red font-extrabold text-[48px] mb-[14px]">
@@ -30,7 +65,7 @@ export default function Home({
         {!isAuthenticated ? (
           <Signin />
         ) : (
-          <SavedPosts token={access_token!} username={user.name} />
+          <SavedPosts token={access_token!} username={user?.name} />
         )}
       </div>
       <div className="flex flex-grow w-full"></div>
@@ -78,12 +113,14 @@ export async function getServerSideProps({
         },
       };
     }
+
     const response = await getToken({
       code: code as string,
       grant_type: "authorization_code",
       redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
     });
-    if (!response) {
+
+    if (!response?.access_token) {
       return {
         props: {},
       };
@@ -96,7 +133,7 @@ export async function getServerSideProps({
       maxAge: expires_in,
       secure: true,
     });
-    const user = await getUser(storedToken || access_token);
+    const user = await getUser(access_token);
     return {
       props: {
         user,

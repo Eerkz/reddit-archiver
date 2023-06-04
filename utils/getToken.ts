@@ -17,7 +17,7 @@ export type RedditAuthResponse =
 const clientId = process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID;
 const clientSecret = process.env.REDDIT_SECRET;
 
-const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString(
+export const authHeader = `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString(
   "base64"
 )}`;
 

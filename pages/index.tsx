@@ -113,10 +113,9 @@ export async function getServerSideProps({
   query,
 }: GetServerSidePropsContext) {
   const { code } = query;
+  const storedToken = getCookie("rr_user_access_token", { req, res });
 
   try {
-    const storedToken = getCookie("rr_user_access_token", { req, res });
-
     if (storedToken) {
       const user = await getUser(storedToken as string);
       return {
@@ -161,7 +160,11 @@ export async function getServerSideProps({
       },
     };
   } catch (error: any) {
-    console.error(error.message);
+    if (storedToken) {
+      res.setHeader("Set-Cookie", [
+        `rr_user_access_token=deleted; Max-Age=0; path=/`,
+      ]);
+    }
     return {
       props: {
         error: error.message,

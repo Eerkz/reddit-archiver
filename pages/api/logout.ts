@@ -28,7 +28,9 @@ export default async function handler(
       const { message } = await response.json();
       throw new Error(message);
     }
-    deleteCookie("rr_user_access_token", { req, res });
+    res.setHeader("Set-Cookie", [
+      `rr_user_access_token=deleted; Max-Age=0; path=/`,
+    ]);
     return res.status(200).json({ message: "User successfully logged out." });
   } catch (error: any) {
     return res

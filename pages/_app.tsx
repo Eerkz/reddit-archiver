@@ -1,5 +1,5 @@
 import { Nunito } from "next/font/google";
-
+import HeadLayout from "../components/layouts/Head";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 
@@ -20,6 +20,7 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: ${nunito.style.fontFamily};
         }
       `}</style>
+      <HeadLayout />
       <Component {...pageProps} />;
     </>
   );

@@ -72,7 +72,7 @@ export default function SavedPosts({
           className="bg-primary-red hover:bg-primary-red-dark transition-colors ease-in-out rounded-[17px] justify-center items-center text-white font-bold text-lg flex gap-x-[7px] px-[17px] py-[10px]"
         >
           <Image
-            src={"/download.svg"}
+            src={"/images/download.svg"}
             alt="download"
             width={21}
             height={20}

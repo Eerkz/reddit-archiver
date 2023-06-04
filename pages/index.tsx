@@ -6,8 +6,8 @@ import SavedPosts from "../components/landing/SavedPosts";
 import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import HeadLayout from "../components/layouts/Head";
 
 export default function Home({
   user,
@@ -19,9 +19,8 @@ export default function Home({
   error?: string;
 }) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(() =>
-    user && access_token ? true : false
-  );
+  const isAuthenticated = user && access_token ? true : false;
+
   const logout = async () => {
     try {
       const response = await fetch("/api/logout");
@@ -29,7 +28,6 @@ export default function Home({
         const { message } = await response.json();
         throw new Error(message);
       }
-      setIsAuthenticated(false);
       router.replace("/");
     } catch (error: any) {
       console.error(error.message);
@@ -45,7 +43,7 @@ export default function Home({
             onClick={logout}
           >
             <Image
-              src={"/logout.svg"}
+              src={"/images/logout.svg"}
               alt={"logout"}
               width={23}
               height={20}
@@ -59,7 +57,7 @@ export default function Home({
       )}
       <div className="flex flex-col justify-center items-center h-full ">
         <Image
-          src={"/logo.svg"}
+          src={"/images/logo.svg"}
           alt="archiver-logo"
           width={58}
           height={78}
@@ -83,7 +81,7 @@ export default function Home({
       >
         <span>
           <Image
-            src={"/github-logo.svg"}
+            src={"/images/github-logo.svg"}
             alt={"github-logo"}
             width={25}
             height={25}
@@ -107,6 +105,7 @@ export async function getServerSideProps({
       props: {},
     };
   }
+
   try {
     const storedToken = getCookie("rr_user_access_token", { req, res });
 

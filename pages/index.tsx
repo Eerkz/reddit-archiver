@@ -1,9 +1,7 @@
 import { GetServerSidePropsContext } from "next";
-import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import Signin from "../components/landing/Signin";
-import { getToken } from "../utils/getToken";
 import SavedPosts from "../components/landing/SavedPosts";
-import { getUser } from "../utils/getUser";
 import { RedditIdentity } from "../types/RedditUser";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -11,17 +9,11 @@ import { useEffect, useState } from "react";
 import { useAppToast } from "../components/utilities/ToastContainer";
 
 export default function Home({
-  user,
-  access_token,
-  error,
+  isAuthenticated,
 }: {
-  access_token?: string;
-  user: RedditIdentity;
-  error?: string;
+  isAuthenticated: boolean;
 }) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
-    user && access_token ? true : false
-  );
+  const [user, setUser] = useState<RedditIdentity | undefined>();
   const toast = useAppToast();
   const router = useRouter();
 
@@ -32,7 +24,7 @@ export default function Home({
         const { message } = await response.json();
         throw new Error(message);
       }
-      setIsAuthenticated(false);
+      setUser(undefined);
       toast.success("Successfully logged you out.");
       router.push("/");
     } catch (error: any) {
@@ -42,14 +34,41 @@ export default function Home({
   };
 
   useEffect(() => {
-    if (error) {
-      toast.error(error);
-    }
-  }, [error, toast]);
+    (async function fetchUser() {
+      try {
+        if (isAuthenticated) {
+          const response = await fetch(`/api/user`);
+
+          if (!response.ok) {
+            const { message } = await response.json();
+            throw new Error(message);
+          }
+          const { data } = await response.json();
+          setUser(data.user);
+        } else {
+          if (!router.query.code) {
+            return;
+          }
+          const { code } = router.query;
+          const response = await fetch(`/api/login?code=${code}`);
+
+          if (!response.ok) {
+            const { message } = await response.json();
+            throw new Error(message);
+          }
+          const { data } = await response.json();
+          setUser(data.user);
+          router.replace("/");
+        }
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    })();
+  }, [router, toast, isAuthenticated]);
 
   return (
     <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">
-      {isAuthenticated ? (
+      {user ? (
         <div className="flex w-full justify-end px-[20px]">
           <button
             className="flex justify-center items-center gap-x-2"
@@ -79,11 +98,7 @@ export default function Home({
         <h1 className="text-primary-red font-extrabold text-[48px] mb-[14px]">
           reddit-archiver
         </h1>
-        {!isAuthenticated ? (
-          <Signin />
-        ) : (
-          <SavedPosts token={access_token!} username={user?.name} />
-        )}
+        {!user ? <Signin /> : <SavedPosts username={user?.name} />}
       </div>
       <div className="flex flex-grow w-full"></div>
       <a
@@ -112,61 +127,11 @@ export async function getServerSideProps({
   res,
   query,
 }: GetServerSidePropsContext) {
-  const { code } = query;
   const storedToken = getCookie("rr_user_access_token", { req, res });
 
-  try {
-    if (storedToken) {
-      const user = await getUser(storedToken as string);
-      return {
-        props: {
-          user,
-          access_token: storedToken,
-        },
-      };
-    }
-
-    if (!code) {
-      return {
-        props: {},
-      };
-    }
-
-    const response = await getToken({
-      code: code as string,
-      grant_type: "authorization_code",
-      redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
-    });
-
-    if (!response?.access_token) {
-      return {
-        props: {},
-      };
-    }
-
-    const { access_token, expires_in } = response;
-    setCookie("rr_user_access_token", access_token, {
-      req,
-      res,
-      maxAge: expires_in,
-      secure: true,
-      sameSite: "none",
-      httpOnly: true,
-      path: "/",
-    });
-    const user = await getUser(access_token);
-    return {
-      props: {
-        user,
-        access_token,
-      },
-    };
-  } catch (error: any) {
-    deleteCookie("rr_user_access_token", { req, res });
-    return {
-      props: {
-        error: error.message,
-      },
-    };
-  }
+  return {
+    props: {
+      isAuthenticated: storedToken ? true : false,
+    },
+  };
 }

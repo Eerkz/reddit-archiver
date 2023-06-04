@@ -16,6 +16,9 @@ const getUser = async (
     throw new Error(message);
   }
   const data = await response.json();
+  if (!data) {
+    throw new Error("User not found.");
+  }
   return data;
 };
 

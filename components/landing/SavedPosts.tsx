@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { getSavedPosts } from "../../utils/getUser";
 import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
 import { useAppToast } from "../utilities/ToastContainer";
 
-export default function SavedPosts({
-  token,
-  username,
-}: {
-  token: string;
-  username: string;
-}) {
+export default function SavedPosts({ username }: { username: string }) {
   const toast = useAppToast();
   const [isLoading, setIsLoading] = useState(true);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
@@ -19,9 +12,16 @@ export default function SavedPosts({
     (async function fetchSavedItems() {
       try {
         setIsLoading(true);
-        const data = await getSavedPosts(token, username);
-        if (data?.children) {
-          setSavedItems(data.children);
+        const response = await fetch(
+          `/api/saved-items?user=${encodeURIComponent(username)}`
+        );
+        if (!response.ok) {
+          const { message } = await response.json();
+          throw new Error(message);
+        }
+        const { data } = await response.json();
+        if (data?.saved?.children) {
+          setSavedItems(data.saved.children);
         }
       } catch (error: any) {
         console.error(error.message);
@@ -30,7 +30,7 @@ export default function SavedPosts({
         setIsLoading(false);
       }
     })();
-  }, [token, username, toast]);
+  }, [username, toast]);
 
   const handleJSONdowload = async () => {
     try {

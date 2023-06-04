@@ -58,7 +58,13 @@ export default function Home({
         <></>
       )}
       <div className="flex flex-col justify-center items-center h-full ">
-        <Image src={"/logo.svg"} alt="archiver-logo" width={58} height={78} />
+        <Image
+          src={"/logo.svg"}
+          alt="archiver-logo"
+          width={58}
+          height={78}
+          style={{ width: "58px", height: "78px" }}
+        />
         <h1 className="text-primary-red font-extrabold text-[48px] mb-[14px]">
           reddit-archiver
         </h1>

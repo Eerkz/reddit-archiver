@@ -2,9 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --success-color-light: #c6f8de;
+  --success-color-dark: #00bc6d;
+  --error-color-light: #ff5f5f;
+  --error-color-dark: #ff1f1f;
+}
+
 html,
 body {
   height: 100%;
   margin: 0;
   overflow: hidden;
+}
+
+/* TOAST */
+
+/* Change the font family and font size of the toast messages */
+.Toastify__toast-body {
+  font-family: "Nunito Sans";
+  font-size: 16px;
+}
+
+.Toastify__toast--success,
+.Toastify__toast--error {
+  border-radius: 8px !important;
+}
+
+.Toastify__toast--success .Toastify__toast-body {
+  color: var(--success-color-dark);
+  font-weight: 600;
+}
+
+.Toastify__toast--success {
+  background-color: var(--success-color-light) !important;
+}
+
+.Toastify__toast--error {
+  background-color: var(--error-color-light) !important;
+}
+
+.Toastify__toast--error .Toastify__toast-body {
+  color: var(--error-color-dark);
+  font-weight: 600;
+}
+
+.Toastify__toast--success .Toastify__toast-body svg {
+  fill: var(--success-color-dark);
+}
+
+.Toastify__toast--error .Toastify__toast-body svg {
+  fill: var(--error-color-dark);
+}
+
+.Toastify__toast--success {
+  border-left: 6px solid var(--success-color-dark);
+}
+
+.Toastify__toast--error {
+  border-left: 6px solid var(--error-color-dark);
 }

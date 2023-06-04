@@ -5,7 +5,7 @@
 :root {
   --success-color-light: #c6f8de;
   --success-color-dark: #00bc6d;
-  --error-color-light: #ff5f5f;
+  --error-color-light: #ffd1cb;
   --error-color-dark: #ff1f1f;
 }
 
@@ -20,7 +20,7 @@ body {
 
 /* Change the font family and font size of the toast messages */
 .Toastify__toast-body {
-  font-family: "Nunito Sans";
+  font-family: var(--nunito-font);
   font-size: 16px;
 }
 

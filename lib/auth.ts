@@ -1,0 +1,76 @@
+import { GetServerSidePropsContext } from "next";
+import { getCookie, setCookie, deleteCookie } from "cookies-next";
+import { getUser } from "../utils/getUser";
+import { getToken } from "../utils/getToken";
+import { RedditIdentity } from "../types/RedditUser";
+
+export interface GSSPReturn {
+  access_token?: string;
+  user: RedditIdentity;
+  error?: string;
+}
+
+const handleAuth = async (
+  context: GetServerSidePropsContext
+): Promise<{ props: Partial<GSSPReturn> }> => {
+  const { query, req, res } = context;
+  const { code } = query;
+  const storedToken = getCookie("rr_user_access_token", { req, res });
+
+  try {
+    if (storedToken) {
+      const user = await getUser(storedToken as string);
+      return {
+        props: {
+          user,
+          access_token: storedToken as string,
+        },
+      };
+    }
+
+    if (!code) {
+      return {
+        props: {},
+      };
+    }
+
+    const response = await getToken({
+      code: code as string,
+      grant_type: "authorization_code",
+      redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
+    });
+
+    if (!response?.access_token) {
+      return {
+        props: {},
+      };
+    }
+
+    const { access_token, expires_in } = response;
+    setCookie("rr_user_access_token", access_token, {
+      req,
+      res,
+      maxAge: expires_in,
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+      path: "/",
+    });
+    const user = await getUser(access_token);
+    return {
+      props: {
+        user,
+        access_token,
+      },
+    };
+  } catch (error: any) {
+    deleteCookie("rr_user_access_token", { req, res });
+    return {
+      props: {
+        error: error.message,
+      },
+    };
+  }
+};
+
+export { handleAuth };

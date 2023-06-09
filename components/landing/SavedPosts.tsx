@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
 import { useAppToast } from "../utilities/ToastContainer";
+import DownloadButton from "../buttons/DownloadButton";
 
 export default function SavedPosts({ username }: { username: string }) {
   const toast = useAppToast();
@@ -74,19 +75,19 @@ export default function SavedPosts({ username }: { username: string }) {
         )}
       </p>
       {savedItems?.length ? (
-        <button
+        <DownloadButton
+          text="Download"
           onClick={handleJSONdowload}
-          className="bg-primary-red hover:bg-primary-red-dark transition-colors ease-in-out rounded-[17px] justify-center items-center text-white font-bold text-lg flex gap-x-[7px] px-[17px] py-[10px]"
-        >
-          <Image
-            src={"/images/download.svg"}
-            alt="download"
-            width={21}
-            height={20}
-            style={{ width: "21px", height: "20px" }}
-          />
-          <span>Download</span>
-        </button>
+          icon={
+            <Image
+              src={"/images/download.svg"}
+              alt="download"
+              width={21}
+              height={20}
+              style={{ width: "21px", height: "20px" }}
+            />
+          }
+        />
       ) : (
         <></>
       )}

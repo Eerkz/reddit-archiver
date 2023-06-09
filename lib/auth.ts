@@ -4,15 +4,15 @@ import { getUser } from "../utils/getUser";
 import { getToken } from "../utils/getToken";
 import { RedditIdentity } from "../types/RedditUser";
 
-export interface GSSPReturn {
+export type GSSPReturn = {
   access_token?: string;
   user: RedditIdentity;
   error?: string;
-}
+};
 
 const handleAuth = async (
   context: GetServerSidePropsContext
-): Promise<{ props: Partial<GSSPReturn> }> => {
+): Promise<{ props: Partial<GSSPReturn> } | any> => {
   const { query, req, res } = context;
   const { code } = query;
   const storedToken = getCookie("rr_user_access_token", { req, res });
@@ -30,7 +30,10 @@ const handleAuth = async (
 
     if (!code) {
       return {
-        props: {},
+        redirect: {
+          permanent: false,
+          destination: "/",
+        },
       };
     }
 
@@ -42,7 +45,10 @@ const handleAuth = async (
 
     if (!response?.access_token) {
       return {
-        props: {},
+        redirect: {
+          permanent: false,
+          destination: "/",
+        },
       };
     }
 

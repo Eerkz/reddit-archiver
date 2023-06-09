@@ -13,7 +13,7 @@ export type GSSPReturn = {
 const handleAuth = async (
   context: GetServerSidePropsContext
 ): Promise<{ props: Partial<GSSPReturn> } | any> => {
-  const { query, req, res } = context;
+  const { query, req, res, resolvedUrl } = context;
   const { code } = query;
   const storedToken = getCookie("rr_user_access_token", { req, res });
 
@@ -29,12 +29,18 @@ const handleAuth = async (
     }
 
     if (!code) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: "/",
-        },
-      };
+      if (resolvedUrl !== "/") {
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/",
+          },
+        };
+      } else {
+        return {
+          props: {},
+        };
+      }
     }
 
     const response = await getToken({
@@ -44,12 +50,18 @@ const handleAuth = async (
     });
 
     if (!response?.access_token) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: "/",
-        },
-      };
+      if (resolvedUrl !== "/") {
+        return {
+          redirect: {
+            permanent: false,
+            destination: "/",
+          },
+        };
+      } else {
+        return {
+          props: {},
+        };
+      }
     }
 
     const { access_token, expires_in } = response;

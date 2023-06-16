@@ -7,17 +7,14 @@ import SavedSubreddits from "../components/landing/SavedSubreddits";
 import AddSubreddits from "../components/landing/AddSubreddits";
 
 export default function SubredditsPage() {
-  const [activeTab, setActiveTab] = useState<"download" | "save">("download");
-
   return (
     <MainLayout>
       <Tab
         titleA="Download Subreddits"
         titleB="Add New Subreddits"
-        onClickTabA={() => setActiveTab("download")}
-        onClickTabB={() => setActiveTab("save")}
+        slotA={<SavedSubreddits />}
+        slotB={<AddSubreddits />}
       />
-      {activeTab === "download" ? <SavedSubreddits /> : <AddSubreddits />}
     </MainLayout>
   );
 }

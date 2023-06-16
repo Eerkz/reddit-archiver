@@ -1,5 +1,14 @@
 import { RedditIdentity, SavedItems, Subreddits } from "../types/RedditUser";
 
+interface PaginatedListingResponse<T> {
+  after: string | null;
+  before: string | null;
+  dist: number;
+  geo_filter: string;
+  modhash: string | null;
+  children: T[];
+}
+
 const getUser = async (
   access_token: string
 ): Promise<undefined | RedditIdentity> => {
@@ -19,11 +28,11 @@ const getUser = async (
   return data;
 };
 
-const getSavedPosts = async (
+const fetchData = async <T>(
   token: string,
-  username: string
-): Promise<undefined | SavedItems> => {
-  let allData: SavedItems = {
+  url: string
+): Promise<undefined | PaginatedListingResponse<T>> => {
+  let allData: PaginatedListingResponse<T> = {
     after: null,
     before: null,
     dist: 0,
@@ -43,11 +52,7 @@ const getSavedPosts = async (
       show: "all",
     });
 
-    const url = `https://oauth.reddit.com/user/${encodeURIComponent(
-      username
-    )}/saved?${params.toString()}`;
-
-    const response = await fetch(url, {
+    const response = await fetch(`${url}?${params.toString()}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -80,62 +85,21 @@ const getSavedPosts = async (
   return allData;
 };
 
-const getSubreddits = async (
+const getSavedPosts = async (
   token: string,
-): Promise<undefined | Subreddits> => {
-  let allData: Subreddits = {
-    after: null,
-    before: null,
-    dist: 0,
-    geo_filter: "",
-    modhash: null,
-    children: [],
-  };
+  username: string
+): Promise<undefined | PaginatedListingResponse<SavedItems>> => {
+  const url = `https://oauth.reddit.com/user/${encodeURIComponent(
+    username
+  )}/saved`;
+  return fetchData<SavedItems>(token, url);
+};
 
-  let count = 0;
-  let after: string | null = null;
-
-  while (true) {
-    const params = new URLSearchParams({
-      after: after || "",
-      limit: "100", // Adjust the limit as per your needs
-      count: count.toString(),
-      show: "all",
-    });
-
-    const url = `https://oauth.reddit.com/subreddits/mine/subscriber?${params.toString()}`;
-
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!response.ok) {
-      const { message } = await response.json();
-      throw new Error(message);
-    }
-
-    const { data } = await response.json();
-
-    allData.children.push(...(data.children || []));
-    allData.after = data.after;
-    allData.before = data.before;
-    allData.dist = data.dist;
-    allData.geo_filter = data.geo_filter;
-    allData.modhash = data.modhash;
-
-    count += data.dist;
-    after = data.after;
-
-    if (!after) {
-      break;
-    }
-  }
-
-  return allData;
+const getSubreddits = async (
+  token: string
+): Promise<undefined | PaginatedListingResponse<Subreddits>> => {
+  const url = "https://oauth.reddit.com/subreddits/mine/subscriber";
+  return fetchData<Subreddits>(token, url);
 };
 
 export { getUser, getSavedPosts, getSubreddits };

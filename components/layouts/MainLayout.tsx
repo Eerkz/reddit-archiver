@@ -11,9 +11,9 @@ export default function MainLayout({
 }) {
   const { user } = useCurrentUser();
   return (
-    <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">
+    <main className="justify-center flex flex-col items-center w-full min-h-[100vh] py-[20px]">
       {user && <TopMenu />}
-      <div className="flex flex-col justify-center items-center h-full ">
+      <div className="flex flex-col justify-center items-center h-full w-auto mt-[150px] mb-10">
         <Link href={"/"}>
           <div className="flex flex-col items-center justify-center">
             <Image

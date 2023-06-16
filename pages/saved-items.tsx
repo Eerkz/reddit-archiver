@@ -5,17 +5,9 @@ import Tab from "../components/navigation/Tab";
 import { useState } from "react";
 import { RedditIdentity } from "../types/RedditUser";
 import SavedPosts from "../components/landing/SavedPosts";
+import { useCurrentUser } from "../store/userContext";
 
-export default function SavedItemsPage({
-  user,
-  access_token,
-  error,
-}: {
-  access_token?: string;
-  user: RedditIdentity;
-  error?: string;
-}) {
-  const username = user?.name;
+export default function SavedItemsPage() {
   const [activeTab, setActiveTab] = useState<"download" | "save">("download");
 
   return (
@@ -27,7 +19,7 @@ export default function SavedItemsPage({
         onClickTabB={() => setActiveTab("save")}
       />
       {activeTab === "download" ? (
-        <SavedPosts username={username} />
+        <SavedPosts />
       ) : (
         <>Mass save new items by uploading a JSON file.</>
       )}

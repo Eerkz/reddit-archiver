@@ -5,22 +5,13 @@ import { handleAuth } from "../lib/auth";
 import MainLayout from "../components/layouts/MainLayout";
 import Signin from "../components/landing/Signin";
 import ActionsList from "../components/navigation/ActionsList";
+import { useCurrentUser } from "../store/userContext";
 
-export default function Home({
-  user,
-  access_token,
-  error,
-}: {
-  access_token?: string;
-  user: RedditIdentity;
-  error?: string;
-}) {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() =>
-    user && access_token ? true : false
-  );
+export default function Home() {
+  const { user } = useCurrentUser();
   return (
     <MainLayout>
-      {!isAuthenticated ? <Signin /> : <ActionsList variant="large" />}
+      {!user ? <Signin /> : <ActionsList variant="large" />}
     </MainLayout>
   );
 }

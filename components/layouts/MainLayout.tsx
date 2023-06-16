@@ -2,15 +2,17 @@ import React from "react";
 import Image from "next/image";
 import TopMenu from "../navigation/TopMenu";
 import Link from "next/link";
+import { useCurrentUser } from "../../store/userContext";
 
 export default function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { user } = useCurrentUser();
   return (
     <main className="justify-center flex flex-col items-center w-full h-[100vh] py-[20px]">
-      <TopMenu />
+      {user && <TopMenu />}
       <div className="flex flex-col justify-center items-center h-full ">
         <Link href={"/"}>
           <div className="flex flex-col items-center justify-center">

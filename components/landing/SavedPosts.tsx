@@ -3,14 +3,20 @@ import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
 import { useAppToast } from "../utilities/ToastContainer";
 import DownloadButton from "../buttons/DownloadButton";
+import { useCurrentUser } from "../../store/userContext";
 
-export default function SavedPosts({ username }: { username: string }) {
+export default function SavedPosts() {
+  const { user } = useCurrentUser();
   const toast = useAppToast();
+  const username = user?.name || "";
   const [isLoading, setIsLoading] = useState(true);
   const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
 
   useEffect(() => {
     (async function fetchSavedItems() {
+      if (!username) {
+        return;
+      }
       try {
         setIsLoading(true);
         const response = await fetch(
@@ -34,6 +40,9 @@ export default function SavedPosts({ username }: { username: string }) {
   }, [username, toast]);
 
   const handleJSONdowload = async () => {
+    if (!username) {
+      return;
+    }
     try {
       const filename = (
         username +

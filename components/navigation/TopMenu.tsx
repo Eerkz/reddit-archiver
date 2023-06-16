@@ -4,8 +4,10 @@ import { logout } from "../../lib/reddit/client";
 import { useAppToast } from "../utilities/ToastContainer";
 import { useRouter } from "next/router";
 import ActionsList from "./ActionsList";
+import { useCurrentUser } from "../../store/userContext";
 
 export default function TopMenu() {
+  const { clearUser } = useCurrentUser();
   const [showActions, setShowActions] = useState(false);
   const toast = useAppToast();
   const router = useRouter();
@@ -13,6 +15,7 @@ export default function TopMenu() {
   const handleLogout = async () => {
     try {
       await logout();
+      clearUser();
       toast.success("Successfully logged you out.");
       router.push("/");
     } catch (error: any) {

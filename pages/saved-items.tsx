@@ -3,9 +3,8 @@ import MainLayout from "../components/layouts/MainLayout";
 import { handleAuth } from "../lib/auth";
 import Tab from "../components/navigation/Tab";
 import { useState } from "react";
-import { RedditIdentity } from "../types/RedditUser";
 import SavedPosts from "../components/landing/SavedPosts";
-import { useCurrentUser } from "../store/userContext";
+import AddSavedPosts from "../components/landing/AddSavedPosts";
 
 export default function SavedItemsPage() {
   const [activeTab, setActiveTab] = useState<"download" | "save">("download");
@@ -18,11 +17,7 @@ export default function SavedItemsPage() {
         onClickTabA={() => setActiveTab("download")}
         onClickTabB={() => setActiveTab("save")}
       />
-      {activeTab === "download" ? (
-        <SavedPosts />
-      ) : (
-        <>Mass save new items by uploading a JSON file.</>
-      )}
+      {activeTab === "download" ? <SavedPosts /> : <AddSavedPosts />}
     </MainLayout>
   );
 }

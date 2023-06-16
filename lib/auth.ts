@@ -1,7 +1,6 @@
 import { GetServerSidePropsContext } from "next";
 import { getCookie, setCookie, deleteCookie } from "cookies-next";
-import { getUser } from "../utils/getUser";
-import { getToken } from "../utils/getToken";
+import { getUser, getToken } from "./reddit/server";
 import { RedditIdentity } from "../types/RedditUser";
 
 export type GSSPReturn = {

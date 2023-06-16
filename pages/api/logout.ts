@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCookie, deleteCookie } from "cookies-next";
-import { authHeader } from "../../utils/getToken";
+import { authHeader } from "../../lib/reddit/server";
 
 export default async function handler(
   req: NextApiRequest,

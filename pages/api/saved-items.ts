@@ -1,6 +1,6 @@
 import { getCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSavedPosts } from "../../utils/getUser";
+import { getSavedPosts } from "../../lib/reddit/server";
 
 export default async function handler(
   req: NextApiRequest,

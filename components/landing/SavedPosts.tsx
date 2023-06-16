@@ -85,6 +85,7 @@ export default function SavedPosts() {
       </p>
       {savedItems?.length ? (
         <DownloadButton
+          type="button"
           text="Download"
           onClick={handleJSONdowload}
           icon={

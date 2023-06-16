@@ -13,6 +13,7 @@ export default function ToastContainer({ ...props }) {
       closeOnClick={false}
       pauseOnHover={true}
       draggable={true}
+      limit={1}
       {...props}
     />
   );

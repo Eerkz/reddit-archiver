@@ -1,4 +1,4 @@
-import { RedditIdentity, SavedItems } from "../types/RedditUser";
+import { RedditIdentity, SavedItems, Subreddits } from "../types/RedditUser";
 
 const getUser = async (
   access_token: string
@@ -80,4 +80,62 @@ const getSavedPosts = async (
   return allData;
 };
 
-export { getUser, getSavedPosts };
+const getSubreddits = async (
+  token: string,
+): Promise<undefined | Subreddits> => {
+  let allData: Subreddits = {
+    after: null,
+    before: null,
+    dist: 0,
+    geo_filter: "",
+    modhash: null,
+    children: [],
+  };
+
+  let count = 0;
+  let after: string | null = null;
+
+  while (true) {
+    const params = new URLSearchParams({
+      after: after || "",
+      limit: "100", // Adjust the limit as per your needs
+      count: count.toString(),
+      show: "all",
+    });
+
+    const url = `https://oauth.reddit.com/subreddits/mine/subscriber?${params.toString()}`;
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const { message } = await response.json();
+      throw new Error(message);
+    }
+
+    const { data } = await response.json();
+
+    allData.children.push(...(data.children || []));
+    allData.after = data.after;
+    allData.before = data.before;
+    allData.dist = data.dist;
+    allData.geo_filter = data.geo_filter;
+    allData.modhash = data.modhash;
+
+    count += data.dist;
+    after = data.after;
+
+    if (!after) {
+      break;
+    }
+  }
+
+  return allData;
+};
+
+export { getUser, getSavedPosts, getSubreddits };

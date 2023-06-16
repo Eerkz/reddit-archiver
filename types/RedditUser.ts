@@ -185,8 +185,20 @@ type SavedItem =
       };
     };
 
+type Subreddit = {
+  kind: string;
+  data: {
+    display_name: string;
+    name: string;
+  };
+};
+
 interface SavedItems extends Listing {
   children: Array<SavedItem>;
 }
 
-export type { RedditIdentity, SavedItem, SavedItems };
+interface Subreddits extends Listing {
+  children: Array<Subreddit>;
+}
+
+export type { RedditIdentity, SavedItem, SavedItems, Subreddits, Subreddit };

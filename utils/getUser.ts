@@ -1,4 +1,4 @@
-import { RedditIdentity, SavedItems, Subreddits } from "../types/RedditUser";
+import { RedditIdentity, SavedItem, SavedItems, Subreddit, Subreddits } from "../types/RedditUser";
 
 interface PaginatedListingResponse<T> {
   after: string | null;
@@ -88,18 +88,18 @@ const fetchData = async <T>(
 const getSavedPosts = async (
   token: string,
   username: string
-): Promise<undefined | PaginatedListingResponse<SavedItems>> => {
+): Promise<undefined | PaginatedListingResponse<SavedItem>> => {
   const url = `https://oauth.reddit.com/user/${encodeURIComponent(
     username
   )}/saved`;
-  return fetchData<SavedItems>(token, url);
+  return fetchData<SavedItem>(token, url);
 };
 
 const getSubreddits = async (
   token: string
-): Promise<undefined | PaginatedListingResponse<Subreddits>> => {
+): Promise<undefined | PaginatedListingResponse<Subreddit>> => {
   const url = "https://oauth.reddit.com/subreddits/mine/subscriber";
-  return fetchData<Subreddits>(token, url);
+  return fetchData<Subreddit>(token, url);
 };
 
 export { getUser, getSavedPosts, getSubreddits };

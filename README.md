@@ -21,9 +21,9 @@ The app will require you to submit a json in the following format:
   ```json
 [
 	{
-		"kind": "t3" // could be t3 or t1 object type
+		"kind": "t3", // could be t3 or t1 object type
 		"data": {
-			"name": "t3_123sda23"; // sample fullname of a thing
+			"name": "t3_123sda23" // sample fullname of a thing
 		}
 	}
 ]

@@ -22,7 +22,7 @@ export default function App({ Component, pageProps }: AppProps) {
           font-family: ${nunito.style.fontFamily};
         }
       `}</style>
-      <HeadLayout />
+      {/* <HeadLayout /> */}
       <UserProvider
         user={pageProps.user}
         access_token={pageProps.access_token}

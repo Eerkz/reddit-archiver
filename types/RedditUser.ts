@@ -182,6 +182,7 @@ type SavedItem =
         title: string;
         url: string;
         subreddit: string;
+        name: string;
       };
     };
 

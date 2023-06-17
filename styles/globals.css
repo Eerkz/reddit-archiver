@@ -15,6 +15,17 @@ body {
   margin: 0;
 }
 
+input[type="file"] {
+  display: none;
+}
+
+.clamp-one-line {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 /* TOAST */
 
 /* Change the font family and font size of the toast messages */

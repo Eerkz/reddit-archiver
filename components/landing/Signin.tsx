@@ -6,7 +6,7 @@ export default function Signin() {
   const [randomSeed, setRandomSeed] = useState("");
   const params = {
     duration: "permanent",
-    scope: "identity edit history save read mysubreddits subscribe save submit",
+    scope: "identity edit save read mysubreddits subscribe save",
     redirect_uri: process.env.NEXT_PUBLIC_REDIRECT_URI!,
     response_type: "code",
     client_id: process.env.NEXT_PUBLIC_REDDIT_CLIENT_ID!,

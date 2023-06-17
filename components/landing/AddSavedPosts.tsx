@@ -3,6 +3,7 @@ import DownloadButton from "../buttons/DownloadButton";
 import Loading from "../utilities/Loading";
 import { SavedItem } from "../../types/RedditUser";
 import { useAppToast } from "../utilities/ToastContainer";
+import Link from "next/link";
 
 export default function AddSavedPosts({
   savedItems = [],
@@ -83,6 +84,21 @@ export default function AddSavedPosts({
 
   return (
     <>
+      <p className="text-primary-dark font-semibold text-lg text-center mb-[38px] max-w-[520px]">
+        You can see{" "}
+        <a
+          href="https://github.com/Eerkz/reddit-vault"
+          target="_blank"
+          rel="noreferrer"
+          className="underline"
+        >
+          here
+        </a>{" "}
+        what type of JSON format we accept. You could login first with the
+        specific account you intend to copy the saved items from, download the
+        saved-items then upload it in your target account here.
+      </p>
+
       <div className="flex relative items-center justify-center mt-4 mb-6">
         <p className="w-[260px] leading-loose py-2 rounded-tl-[7px] break-all rounded-bl-[7px] bg-[#F2F2F2] h-[44px] pl-4 pr-8 flex items-center clamp-one-line">
           {fileName}

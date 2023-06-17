@@ -21,14 +21,14 @@ The app will require you to submit a json in the following format:
   ```json
 [
 	{
-		kind: "t3" | "t1" // object type
-		data: {
-			name: string; // fullname of a thing
+		"kind": "t3" // could be t3 or t1 object type
+		"data": {
+			"name": "t3_123sda23"; // sample fullname of a thing
 		}
 	}
-	....
 ]
 ```
+
 For more information about `object types` and what a `thing` is, refer to <a href="https://www.reddit.com/dev/api/oauth/#fullnames">Reddit API Documentation</a>.
 
 If you intend to migrate all saved posts/comments from one account to another, follow these steps:

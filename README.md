@@ -1,38 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### Features
 
-## Getting Started
+- Download saved posts/comments as a JSON file.
+- Download subreddits as a txt file.
+- Perform bulk saving of posts/comments.
+- Perform bulk subscription to subreddits.
 
-First, run the development server:
+# reddit-archiver
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+Reddit Archiver is an application that allows you to archive sections of your Reddit account. It provides features to download your saved posts/comments as a JSON file, download your subreddits as a txt file, and perform bulk operations like saving posts/comments and subscribing to subreddits.
+
+## Motivation
+The motivation behind this app is to enable users to migrate account data, such as subreddits and saved posts/comments, to another Reddit account eas
+
+## Authorization
+
+To authorize Reddit Archiver, click on the sign-in button and then click "Allow" in the newly opened Reddit window. This grants the app an access token to access certain resources on your behalf. Don't worry, this token expires in 1 day, and you can revoke the app&apos; access to your Reddit account by simply logging out of the app.
+
+### Bulk Saving Posts/Comments
+The app will require you to submit a json in the following format: 
+  ```json
+[
+	{
+		kind: "t3" | "t1" // object type
+		data: {
+			name: string; // fullname of a thing
+		}
+	}
+	....
+]
 ```
+For more information about `object types` and what a `thing` is, refer to <a href="https://www.reddit.com/dev/api/oauth/#fullnames">Reddit API Documentation</a>.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If you intend to migrate all saved posts/comments from one account to another, follow these steps:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+1. Log in to the source account and download the JSON file containing your saved posts.
+2. Log out of the source account.
+3. Log in to the destination account and upload the JSON file downloaded from the source account.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### Privacy
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Reddit Archiver does not store any of your account details. The app only requests essential authorization scopes to function properly:
+	
+	scope: "identity edit save read mysubreddits subscribe save"
+	
+You can read more about what these scopes mean <a href="https://www.reddit.com/dev/api/oauth/">here</a>.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Upcoming Features
+- Easy switching between accounts.
+- Downloading all user account details in one place.
+- One-click migration of account data to another account, eliminating the need for manual downloading/uploading.
+- Displaying saved posts/comments categorized by subreddit or type (post or comment).

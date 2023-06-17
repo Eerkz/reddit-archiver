@@ -1,43 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { SavedItem } from "../../types/RedditUser";
 import Image from "next/image";
 import { useAppToast } from "../utilities/ToastContainer";
 import DownloadButton from "../buttons/DownloadButton";
 import { useCurrentUser } from "../../store/userContext";
 
-export default function SavedPosts() {
+export default function SavedPosts({
+  savedItems,
+  isLoading,
+}: {
+  savedItems: SavedItem[];
+  isLoading: boolean;
+}) {
   const { user } = useCurrentUser();
   const toast = useAppToast();
   const username = user?.name || "";
-  const [isLoading, setIsLoading] = useState(true);
-  const [savedItems, setSavedItems] = useState<SavedItem[]>([]);
-
-  useEffect(() => {
-    (async function fetchSavedItems() {
-      if (!username) {
-        return;
-      }
-      try {
-        setIsLoading(true);
-        const response = await fetch(
-          `/api/saved-items?user=${encodeURIComponent(username)}`
-        );
-        if (!response.ok) {
-          const { message } = await response.json();
-          throw new Error(message);
-        }
-        const { data } = await response.json();
-        if (data?.saved?.children) {
-          setSavedItems(data.saved.children);
-        }
-      } catch (error: any) {
-        console.error(error.message);
-        toast.error(error.message);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-  }, [username, toast]);
 
   const handleJSONdowload = async () => {
     if (!username) {

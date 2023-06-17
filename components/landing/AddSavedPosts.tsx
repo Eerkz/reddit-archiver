@@ -4,7 +4,13 @@ import Loading from "../utilities/Loading";
 import { SavedItem } from "../../types/RedditUser";
 import { useAppToast } from "../utilities/ToastContainer";
 
-export default function AddSavedPosts() {
+export default function AddSavedPosts({
+  savedItems = [],
+  addToSavedItems,
+}: {
+  savedItems: SavedItem[];
+  addToSavedItems: (newItems: SavedItem[]) => void;
+}) {
   const toast = useAppToast();
   const [isLoading, setIsLoading] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -33,10 +39,19 @@ export default function AddSavedPosts() {
     }
     setIsLoading(true);
     try {
-      const thingsNames = Object.values(toSaveItems).map((el) => {
-        const { data } = el as SavedItem;
-        return data.name;
+      const thingsObjects = toSaveItems.filter((el: SavedItem) => {
+        const { data } = el;
+        const isAlreadyHere = savedItems.some(
+          (saved) => saved.data.name === data.name
+        );
+        return !isAlreadyHere;
       });
+
+      const thingsNames = thingsObjects.map((el: SavedItem) => el.data.name);
+      if (!thingsNames.length) {
+        toast.success("Nothing new to saved here.");
+        return;
+      }
       const response = await fetch("/api/saved-items", {
         method: "POST",
         body: JSON.stringify({
@@ -50,8 +65,9 @@ export default function AddSavedPosts() {
       if (!response.ok) {
         throw new Error(message);
       } else {
+        addToSavedItems(thingsObjects);
         toast.success(message);
-        removeFile()
+        removeFile();
       }
     } catch (error: any) {
       toast.error(error.message);

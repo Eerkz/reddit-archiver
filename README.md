@@ -1,3 +1,6 @@
+###NOTE:
+- Currently under construction. Some features may not work due to Reddit API changes. 
+
 ### Features
 
 - Download saved posts/comments as a JSON file.
